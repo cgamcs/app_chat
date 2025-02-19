@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:gravity="center"
+    android:background="@drawable/background"
+    android:orientation="vertical"
+    tools:context=".SesionActivity">
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="30sp"
+        android:background="@drawable/custom_text"
+        android:radius="70sp"
+        app:cardCornerRadius="30sp"
+        app:cardElevation="20sp">
+
+        <LinearLayout
+            android:layout_width="351sp"
+            android:layout_height="314sp"
+            android:layout_gravity="center_horizontal"
+            android:layout_margin="40sp"
+            android:background="@color/white"
+            android:orientation="vertical"
+            android:padding="24sp"
+            android:radius="20sp">
+
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/login_title"
+                android:textAlignment="center"
+                android:textAllCaps="true"
+                android:textColor="@color/black"
+                android:textColorHighlight="@color/black"
+                android:textColorHint="@color/black"
+                android:textSize="34sp"
+                android:textStyle="bold" />
+
+            <EditText
+                android:id="@+id/textusuario"
+                android:layout_width="match_parent"
+                android:layout_height="50sp"
+                android:layout_marginTop="20sp"
+                android:background="@drawable/custom_text"
+                android:drawableStart="@drawable/baseline_person_24"
+                android:drawablePadding="8sp"
+                android:ems="10"
+                android:hint="@string/hint_user"
+                android:inputType="text"
+                android:textColor="@color/black"
+                android:textColorHint="@color/cardview_dark_background" />
+
+            <EditText
+                android:id="@+id/txtcontra"
+                android:layout_width="match_parent"
+                android:layout_height="50sp"
+                android:layout_marginTop="20sp"
+                android:background="@drawable/custom_text"
+                android:drawableStart="@drawable/baseline_candado_24"
+                android:drawablePadding="8sp"
+                android:ems="10"
+                android:hint="@string/hint_password"
+                android:inputType="textPassword"
+                android:textColor="@color/black"
+                android:textColorHint="@color/cardview_dark_background" />
+
+            <Button
+                android:id="@+id/btningresar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20sp"
+                android:backgroundTint="@color/purple"
+                android:text="@string/button_login"
+                android:textAllCaps="false"
+                android:textSize="16sp"
+                android:textStyle="bold"/>
+
+
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <TextView
+
+android:layout_width="match_parent"
+android:layout_height="wrap_content"
+android:text="@string/not_registered"
+android:textAlignment="center"
+android:textAllCaps="false"
+android:textColor="@color/white"
+android:textSize="18sp"
+
+    />
+
+    <TextView
+
+        android:id="@+id/lblregistrate"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5sp"
+        android:text="@string/register_here"
+        android:textAlignment="center"
+        android:textAllCaps="false"
+        android:textColor="@color/white"
+        android:textSize="18sp"
+        android:textStyle="bold" />
+
+</LinearLayout>
+
+
+
+
+
+
+

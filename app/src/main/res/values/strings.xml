@@ -1,0 +1,9 @@
+<resources>
+        <string name="app_name">xdd</string>
+        <string name="login_title">Inicio de sesión</string>
+        <string name="hint_user">Usuario</string>
+        <string name="hint_password">Contraseña</string>
+        <string name="button_login">Iniciar Sesión</string>
+        <string name="not_registered">¿Aun no estas registrado?</string>
+        <string name="register_here">Registrate aqui</string>
+</resources>

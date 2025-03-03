@@ -1,5 +1,6 @@
 plugins {
     alias(libs.plugins.android.application)
+    alias(libs.plugins.google.services)
 }
 
 android {
@@ -32,7 +33,6 @@ android {
 }
 
 dependencies {
-
     implementation(libs.appcompat)
     implementation(libs.material)
     implementation(libs.activity)
@@ -43,4 +43,8 @@ dependencies {
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
     implementation("androidx.gridlayout:gridlayout:1.0.0")
+
+    // Dependencias de Firebase
+    implementation("com.google.firebase:firebase-auth:22.1.1") // Autenticación de Firebase
+    implementation("com.google.firebase:firebase-firestore:24.7.0") // Firestore (opcional)
 }

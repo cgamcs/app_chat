@@ -1,7 +1,6 @@
 package com.example.xdd;
 
 import android.content.Intent;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -10,41 +9,54 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.AuthResult;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+
 import java.sql.Connection;
-import java.sql.Statement;
-import java.sql.ResultSet;
 
 import com.example.xdd.Connection.ConnectionBD;
 
 public class SesionActivity extends AppCompatActivity {
-    EditText usuario, contra;
-    TextView lblregistrar;
-    Button btningresar;
-
-    Connection con;
-
-    public SesionActivity() {
-        ConnectionBD instanceConnection = new ConnectionBD();
-        con = instanceConnection.connect();
-    }
+    private EditText usuario, contra;
+    private Button btningresar;
+    private TextView lblregistrar;
+    private FirebaseAuth mAuth;
+    private Connection con;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EdgeToEdge.enable(this);
         setContentView(R.layout.sesion);
+
+        mAuth = FirebaseAuth.getInstance();
 
         usuario = findViewById(R.id.textusuario);
         contra = findViewById(R.id.txtcontra);
-        lblregistrar = findViewById(R.id.lblregistrate);
         btningresar = findViewById(R.id.btningresar);
+        lblregistrar = findViewById(R.id.lblregistrate);
+
+        ConnectionBD instanceConnection = new ConnectionBD();
+        con = instanceConnection.connect();
 
         btningresar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new SesionActivity.login().execute("");
+                String userEmail = usuario.getText().toString().trim();
+                String userPassword = contra.getText().toString().trim();
+
+                // Validación del formato de correo
+                if (!isValidEmail(userEmail)) {
+                    Toast.makeText(SesionActivity.this, "Correo inválido.", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
+                signIn(userEmail, userPassword);
             }
         });
 
@@ -57,66 +69,33 @@ public class SesionActivity extends AppCompatActivity {
         });
     }
 
-    public class login extends AsyncTask<String, String, String> {
-        String z = null;
-        Boolean exito = false;
+    private void signIn(String email, String password) {
+        Log.d("SesionActivity", "Intentando iniciar sesión con: " + email);
 
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            super.onPostExecute(s);
-        }
-
-        @Override
-        protected String doInBackground(String... strings) {
-            if(con == null) {
-                runOnUiThread(new Runnable() {
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
-                    public void run() {
-                        Toast.makeText(SesionActivity.this, "Verifique su conexion", Toast.LENGTH_SHORT).show();
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            if (user != null && user.isEmailVerified()) {
+                                Toast.makeText(SesionActivity.this, "Acceso exitoso", Toast.LENGTH_SHORT).show();
+
+                                Intent intent = new Intent(SesionActivity.this, MainActivity.class);
+                                startActivity(intent);
+                                finish();
+                            } else {
+                                Toast.makeText(SesionActivity.this, "Por favor, verifica tu correo electrónico.", Toast.LENGTH_SHORT).show();
+                            }
+                        } else {
+                            Log.e("SesionActivity", "Error al iniciar sesión: ", task.getException());
+                            Toast.makeText(SesionActivity.this, "Error: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
+                        }
                     }
                 });
-                z = "En conexion";
-            } else {
-                try {
-                    String sql = "SELECT * FROM usuario WHERE username = '" + usuario.getText() + "' AND password = '" + contra.getText() + "'";
-                    Statement stm = con.createStatement();
-                    ResultSet rs = stm.executeQuery(sql);
+    }
 
-                    if(rs.next()) {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(SesionActivity.this, "Acceso exitoso", Toast.LENGTH_SHORT).show();
-                                Intent menu = new Intent(getApplicationContext(), SesionActivity.class);
-                                startActivity(menu);
-                            }
-                        });
-
-                        usuario.setText("");
-                        contra.setText("");
-                    } else {
-                        runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                Toast.makeText(SesionActivity.this, "Usuario/Contraseña Incorrecta", Toast.LENGTH_SHORT).show();
-                            }
-                        });
-                    }
-
-                } catch (Exception e) {
-                    exito = false;
-                    Log.e("Error de conexion SQL: ", e.getMessage());
-                }
-            }
-
-
-
-            return z;
-        }
+    private boolean isValidEmail(String email) {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }
 }

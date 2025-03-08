@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">xdd</string>
+    <string name="login_title">Login</string>
+    <string name="hint_user">Username</string>
+    <string name="hint_password">Password</string>
+    <string name="button_login">Login</string>
+    <string name="not_registered">Not registered yet?</string>
+    <string name="register_here">Register here</string>
+    <string name="button_register">Register</string>
+    <string name="button_logout">Logout</string>
+    <string name="button_language">Change Language</string>
+    <string name="button_language_accept">Accept</string>
+    <string name="register_title">Register</string>
+    <string name="hint_full_name">Full Name</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_phone">Mobile Phone</string>
+    <string name="hint_confirm_password">Confirm Password</string>
+    <string name="already_registered">Already registered?</string>
+    <string name="start_now">Start Now</string>
+</resources>

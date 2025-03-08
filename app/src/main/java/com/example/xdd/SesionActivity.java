@@ -65,6 +65,7 @@ public class SesionActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent reg = new Intent(getApplicationContext(), RegisterActivity.class);
                 startActivity(reg);
+                finish();
             }
         });
     }

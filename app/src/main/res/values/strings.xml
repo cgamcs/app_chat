@@ -4,6 +4,17 @@
         <string name="hint_user">Usuario</string>
         <string name="hint_password">Contraseña</string>
         <string name="button_login">Iniciar Sesión</string>
-        <string name="not_registered">¿Aun no estas registrado?</string>
-        <string name="register_here">Registrate aqui</string>
+        <string name="not_registered">¿Aún no estás registrado?</string>
+        <string name="register_here">Regístrate aquí</string>
+        <string name="button_register">Registrarme</string>
+        <string name="button_logout">Cerrar Sesión</string>
+        <string name="button_language">Cambiar Idioma</string>
+        <string name="button_language_accept">Aceptar</string>
+        <string name="register_title">Regístrate</string>
+        <string name="hint_full_name">Nombre y Apellidos</string>
+        <string name="hint_email">Correo Electrónico</string>
+        <string name="hint_phone">Teléfono Móvil</string>
+        <string name="hint_confirm_password">Confirmar Contraseña</string>
+        <string name="already_registered">¿Ya estás registrado?</string>
+        <string name="start_now">Iniciar Sesión</string>
 </resources>

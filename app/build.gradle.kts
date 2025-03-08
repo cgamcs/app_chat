@@ -26,9 +26,14 @@ android {
             )
         }
     }
+
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
+    }
+
+    lintOptions {
+        disable ("Deprecated")
     }
 }
 
@@ -47,4 +52,7 @@ dependencies {
     // Dependencias de Firebase
     implementation("com.google.firebase:firebase-auth:22.1.1") // Autenticación de Firebase
     implementation("com.google.firebase:firebase-firestore:24.7.0") // Firestore (opcional)
+
+    // Google Cloude
+    implementation("com.google.mlkit:translate:17.0.2")
 }

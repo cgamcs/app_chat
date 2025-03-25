@@ -17,33 +17,35 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
-import java.sql.Connection;
-
-import com.example.xdd.Connection.ConnectionBD;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class SesionActivity extends AppCompatActivity {
     private EditText usuario, contra;
     private Button btningresar;
     private TextView lblregistrar;
     private FirebaseAuth mAuth;
-    private Connection con;
+    private DatabaseReference mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.sesion);
 
+        // Inicializar Firebase Auth y Realtime Database
         mAuth = FirebaseAuth.getInstance();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
 
+        // Referencias a los elementos de la interfaz
         usuario = findViewById(R.id.textusuario);
         contra = findViewById(R.id.txtcontra);
         btningresar = findViewById(R.id.btningresar);
         lblregistrar = findViewById(R.id.lblregistrate);
 
-        ConnectionBD instanceConnection = new ConnectionBD();
-        con = instanceConnection.connect();
-
+        // Listener para el botón de inicio de sesión
         btningresar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -60,6 +62,7 @@ public class SesionActivity extends AppCompatActivity {
             }
         });
 
+        // Listener para el texto "Registrar"
         lblregistrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -70,6 +73,7 @@ public class SesionActivity extends AppCompatActivity {
         });
     }
 
+    // Método para iniciar sesión
     private void signIn(String email, String password) {
         Log.d("SesionActivity", "Intentando iniciar sesión con: " + email);
 
@@ -80,11 +84,8 @@ public class SesionActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             FirebaseUser user = mAuth.getCurrentUser();
                             if (user != null && user.isEmailVerified()) {
-                                Toast.makeText(SesionActivity.this, "Acceso exitoso", Toast.LENGTH_SHORT).show();
-
-                                Intent intent = new Intent(SesionActivity.this, MainActivity.class);
-                                startActivity(intent);
-                                finish();
+                                // Obtener datos del usuario desde Firebase Realtime Database
+                                getUserData(user.getUid());
                             } else {
                                 Toast.makeText(SesionActivity.this, "Por favor, verifica tu correo electrónico.", Toast.LENGTH_SHORT).show();
                             }
@@ -96,6 +97,37 @@ public class SesionActivity extends AppCompatActivity {
                 });
     }
 
+    // Método para obtener datos del usuario desde Firebase Realtime Database
+    private void getUserData(String userId) {
+        mDatabase.child("usuarios").child(userId).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    // Obtener los datos del usuario
+                    String nomape = dataSnapshot.child("nomape").getValue(String.class);
+                    String email = dataSnapshot.child("email").getValue(String.class);
+                    String telefono = dataSnapshot.child("telefono").getValue(String.class);
+                    String username = dataSnapshot.child("username").getValue(String.class);
+
+                    // Mostrar mensaje de éxito y redirigir al MainActivity
+                    Toast.makeText(SesionActivity.this, "Acceso exitoso", Toast.LENGTH_SHORT).show();
+                    Intent intent = new Intent(SesionActivity.this, MainActivity.class);
+                    startActivity(intent);
+                    finish();
+                } else {
+                    Toast.makeText(SesionActivity.this, "Datos del usuario no encontrados.", Toast.LENGTH_SHORT).show();
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError databaseError) {
+                Log.e("SesionActivity", "Error al obtener datos del usuario: ", databaseError.toException());
+                Toast.makeText(SesionActivity.this, "Error al obtener datos del usuario.", Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
+
+    // Método para validar el formato de correo
     private boolean isValidEmail(String email) {
         return android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches();
     }

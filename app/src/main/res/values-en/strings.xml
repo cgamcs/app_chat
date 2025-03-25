@@ -18,4 +18,13 @@
     <string name="hint_confirm_password">Confirm Password</string>
     <string name="already_registered">Already registered?</string>
     <string name="start_now">Start Now</string>
+    <string name="navigation_drawer_open">Open menu</string>
+    <string name="navigation_drawer_close">Close menu</string>
+    <string name="chat_menu">Chats</string>
+    <string name="llamada_menu">Calls</string>
+    <string name="menu_menu">Menu</string>
+    <string name="button_edit_profile">Edit Profilel</string>
+    <string name="hint_name">Name</string>
+    <string name="button_save_changes">Save Changes</string>
+    <string name="button_change_password">Change Password</string>
 </resources>

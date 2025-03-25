@@ -50,9 +50,10 @@ dependencies {
     implementation("androidx.gridlayout:gridlayout:1.0.0")
 
     // Dependencias de Firebase
-    implementation("com.google.firebase:firebase-auth:22.1.1") // Autenticación de Firebase
-    implementation("com.google.firebase:firebase-firestore:24.7.0") // Firestore (opcional)
+    implementation(platform("com.google.firebase:firebase-bom:32.2.3")) // BoM para Firebase
+    implementation("com.google.firebase:firebase-auth") // Autenticación de Firebase
+    implementation("com.google.firebase:firebase-database") // Realtime Database
 
-    // Google Cloude
+    // Google ML Kit
     implementation("com.google.mlkit:translate:17.0.2")
 }

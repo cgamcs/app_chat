@@ -17,4 +17,13 @@
         <string name="hint_confirm_password">Confirmar Contraseña</string>
         <string name="already_registered">¿Ya estás registrado?</string>
         <string name="start_now">Iniciar Sesión</string>
+        <string name="navigation_drawer_open">Abrir menú</string>
+        <string name="navigation_drawer_close">Cerrar menú</string>
+        <string name="chat_menu">Chats</string>
+        <string name="llamada_menu">Llamadas</string>
+        <string name="menu_menu">Menú</string>
+        <string name="button_edit_profile">Editar Perfil</string>
+        <string name="hint_name">Nombre</string>
+        <string name="button_save_changes">Guardar Cambios</string>
+        <string name="button_change_password">Cambiar Contraseña</string>
 </resources>

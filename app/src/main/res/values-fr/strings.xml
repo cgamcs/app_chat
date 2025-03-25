@@ -18,4 +18,13 @@
     <string name="hint_confirm_password">Confirmer le mot de passe</string>
     <string name="already_registered">Déjà enregistré ?</string>
     <string name="start_now">Commencer Maintenant</string>
+    <string name="navigation_drawer_open">Ouvrir le menu</string>
+    <string name="navigation_drawer_close">Fermer le menu</string>
+    <string name="chat_menu">Chats</string>
+    <string name="llamada_menu">Appels</string>
+    <string name="menu_menu">Menu</string>
+    <string name="button_edit_profile">Modifier le profil</string>
+    <string name="hint_name">Nom</string>
+    <string name="button_save_changes">Enregistrer les modifications</string>
+    <string name="button_change_password">Changer le mot de passe</string>
 </resources>

@@ -18,28 +18,26 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-
-import com.example.xdd.Connection.ConnectionBD;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 
 public class RegisterActivity extends AppCompatActivity {
     private EditText nomapellidos, email, telefono, usuario, clave, confirmClave;
     private Button registrar;
     private TextView ingresar;
-    private Connection con;
     private FirebaseAuth mAuth;
+    private DatabaseReference mDatabase;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
 
+        // Inicializar Firebase Auth y Realtime Database
         mAuth = FirebaseAuth.getInstance();
-        ConnectionBD connectionBD = new ConnectionBD();
-        con = connectionBD.connect();
+        mDatabase = FirebaseDatabase.getInstance().getReference();
 
+        // Referencias a los elementos de la interfaz
         nomapellidos = findViewById(R.id.txtnomapellidos);
         email = findViewById(R.id.txtemail);
         telefono = findViewById(R.id.txttelefono);
@@ -49,6 +47,7 @@ public class RegisterActivity extends AppCompatActivity {
         registrar = findViewById(R.id.btnregistrar);
         ingresar = findViewById(R.id.lbliniciars);
 
+        // Listener para el botón de registro
         registrar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -64,6 +63,7 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
+        // Listener para el texto "Ingresar"
         ingresar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -74,6 +74,7 @@ public class RegisterActivity extends AppCompatActivity {
         });
     }
 
+    // Método para validar los campos del formulario
     private boolean validarCampos(String email, String password, String confirmPassword) {
         if (email.isEmpty() || password.isEmpty() || confirmPassword.isEmpty() ||
                 nomapellidos.getText().toString().trim().isEmpty() ||
@@ -102,6 +103,7 @@ public class RegisterActivity extends AppCompatActivity {
         return true;
     }
 
+    // Método para registrar al usuario con Firebase Authentication
     private void registerUser(String email, String password) {
         mAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
@@ -110,8 +112,8 @@ public class RegisterActivity extends AppCompatActivity {
                         if (task.isSuccessful()) {
                             FirebaseUser user = mAuth.getCurrentUser();
                             if (user != null) {
-                                saveUserToDatabase(user);
-                                sendEmailVerification(user);
+                                saveUserToDatabase(user); // Guardar datos en Firebase Realtime Database
+                                sendEmailVerification(user); // Enviar correo de verificación
                             }
                         } else {
                             Toast.makeText(RegisterActivity.this, "Error al registrar: " + task.getException().getMessage(), Toast.LENGTH_SHORT).show();
@@ -121,38 +123,34 @@ public class RegisterActivity extends AppCompatActivity {
                 });
     }
 
+    // Método para guardar los datos del usuario en Firebase Realtime Database
     private void saveUserToDatabase(FirebaseUser user) {
-        if (con == null) {
-            Toast.makeText(this, "Error de conexión con la base de datos.", Toast.LENGTH_SHORT).show();
-            return;
-        }
+        String userId = user.getUid(); // Obtener el ID único del usuario
+        String nomape = nomapellidos.getText().toString().trim();
+        String userEmail = user.getEmail();
+        String userTelefono = telefono.getText().toString().trim();
+        String username = usuario.getText().toString().trim();
+        String rol = "usuario";
 
-        try {
-            String verificationToken = java.util.UUID.randomUUID().toString();
+        // Crear un objeto Usuario
+        Usuario usuario = new Usuario(nomape, userEmail, userTelefono, username, rol);
 
-            String query = "INSERT INTO usuario (nomape, email, telefono, username, password, verification_token, verified) VALUES (?, ?, ?, ?, ?, ?, ?)";
-            PreparedStatement stm = con.prepareStatement(query);
-            stm.setString(1, nomapellidos.getText().toString().trim());
-            stm.setString(2, user.getEmail());
-            stm.setString(3, telefono.getText().toString().trim());
-            stm.setString(4, usuario.getText().toString().trim());
-            stm.setString(5, encriptarClave(clave.getText().toString().trim())); // Cifrado opcional
-            stm.setString(6, verificationToken);
-            stm.setBoolean(7, false);
-
-            int filasAfectadas = stm.executeUpdate();
-            if (filasAfectadas > 0) {
-                Toast.makeText(RegisterActivity.this, "Registrado correctamente. Verifica tu correo.", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(RegisterActivity.this, "Error al registrar en la base de datos.", Toast.LENGTH_SHORT).show();
-            }
-
-        } catch (Exception e) {
-            Log.e("DatabaseError", "Error al registrar en la BD: " + e.getMessage(), e);
-            Toast.makeText(RegisterActivity.this, "Error: " + e.getMessage(), Toast.LENGTH_SHORT).show();
-        }
+        // Guardar el usuario en la base de datos
+        mDatabase.child("usuarios").child(userId).setValue(usuario)
+                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                    @Override
+                    public void onComplete(@NonNull Task<Void> task) {
+                        if (task.isSuccessful()) {
+                            Toast.makeText(RegisterActivity.this, "Usuario registrado correctamente.", Toast.LENGTH_SHORT).show();
+                        } else {
+                            Toast.makeText(RegisterActivity.this, "Error al guardar datos en la base de datos.", Toast.LENGTH_SHORT).show();
+                            Log.e("DatabaseError", "Error: ", task.getException());
+                        }
+                    }
+                });
     }
 
+    // Método para enviar el correo de verificación
     private void sendEmailVerification(FirebaseUser user) {
         user.sendEmailVerification()
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -170,20 +168,24 @@ public class RegisterActivity extends AppCompatActivity {
                 });
     }
 
-    private String encriptarClave(String clave) {
-        try {
-            java.security.MessageDigest md = java.security.MessageDigest.getInstance("SHA-256");
-            byte[] hash = md.digest(clave.getBytes());
-            StringBuilder hexString = new StringBuilder();
+    // Clase Usuario para representar los datos en Firebase
+    public static class Usuario {
+        public String nomape;
+        public String email;
+        public String telefono;
+        public String username;
+        public String rol;
 
-            for (byte b : hash) {
-                hexString.append(String.format("%02x", b));
-            }
+        public Usuario() {
+            // Constructor vacío requerido para Firebase
+        }
 
-            return hexString.toString();
-        } catch (Exception e) {
-            Log.e("EncryptError", "Error en el cifrado de la clave", e);
-            return clave;
+        public Usuario(String nomape, String email, String telefono, String username, String rol) {
+            this.nomape = nomape;
+            this.email = email;
+            this.telefono = telefono;
+            this.username = username;
+            this.rol = rol;
         }
     }
 }

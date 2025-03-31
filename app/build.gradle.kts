@@ -44,6 +44,7 @@ dependencies {
     implementation(libs.constraintlayout)
     implementation(files("libs\\jtds-1.3.1.jar"))
     implementation(files("libs\\mysql-connector-java-5.1.49.jar"))
+    implementation(libs.firebase.firestore)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)

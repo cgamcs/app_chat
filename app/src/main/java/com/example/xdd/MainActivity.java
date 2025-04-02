@@ -1,100 +1,71 @@
 package com.example.xdd;
 
-import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
-import android.view.MenuItem;
-import android.widget.TextView;
-
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentTransaction;
-
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
+import androidx.navigation.ui.NavigationUI;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreSettings;
 
-import com.google.android.material.button.MaterialButton;
+import android.util.Log;
 
 public class MainActivity extends AppCompatActivity {
 
     private BottomNavigationView bottomNavigationView;
-    private FirebaseAuth mAuth;
-    private DatabaseReference mDatabase;
-    private TextView txtUserEmail;
-    private MaterialButton btnEditProfile;
+    private static final String TAG = "MainActivity";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        LanguageHelper.applyLanguage(this); // Aplica el idioma correctamente
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        LanguageHelper.applyLanguage(this);
 
         // Inicializar Firebase
-        mAuth = FirebaseAuth.getInstance();
-        mDatabase = FirebaseDatabase.getInstance().getReference();
+        FirebaseApp.initializeApp(this);
+
+        // Configurar Firestore para persistencia offline
+        FirebaseFirestore firestore = FirebaseFirestore.getInstance();
+        FirebaseFirestoreSettings settings = new FirebaseFirestoreSettings.Builder()
+                .setPersistenceEnabled(true)
+                .setCacheSizeBytes(FirebaseFirestoreSettings.CACHE_SIZE_UNLIMITED)
+                .build();
+        firestore.setFirestoreSettings(settings);
+
+        // Forzar la habilitación de la red
+        enableNetwork(firestore);
+
+        // Verificar si hay un usuario autenticado
+        FirebaseUser currentUser = FirebaseAuth.getInstance().getCurrentUser();
+        if (currentUser != null) {
+            // Restaurar las colecciones de Firestore si es necesario
+            FirestoreSetupHelper.checkAndRestoreCollections(this);
+            Log.d(TAG, "Verificando y restaurando colecciones de Firestore");
+        } else {
+            Log.d(TAG, "No hay usuario autenticado");
+            // Aquí podrías redirigir al usuario a la pantalla de login si es necesario
+        }
+
+        setContentView(R.layout.activity_main);
 
         // Configurar BottomNavigationView
         bottomNavigationView = findViewById(R.id.bottom_navigation);
-        bottomNavigationView.setOnNavigationItemSelectedListener(this::onNavigationItemSelected);
-
-        // Mostrar la sección de chats por defecto
-        showFragment(new ChatsFragment());
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        NavigationUI.setupWithNavController(bottomNavigationView, navController);
     }
 
-    // Manejar clics en el menú inferior
-    private boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        int id = item.getItemId();
-
-        if (id == R.id.nav_chats) {
-            showFragment(new ChatsFragment());
-            return true;
-        } else if (id == R.id.nav_calls) {
-            showFragment(new CallsFragment());
-            return true;
-        } else if (id == R.id.nav_menu) {
-            showFragment(new MenuFragment());
-            return true;
-        }
-
-        return false;
+    private void enableNetwork(FirebaseFirestore firestore) {
+        firestore.enableNetwork()
+                .addOnSuccessListener(aVoid -> Log.d(TAG, "Red habilitada"))
+                .addOnFailureListener(e -> Log.e(TAG, "Error al habilitar red: " + e.getMessage()));
     }
 
-    // Mostrar un fragmento en el contenedor
-    private void showFragment(Fragment fragment) {
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        FragmentTransaction transaction = fragmentManager.beginTransaction();
-        transaction.replace(R.id.fragment_container, fragment);
-        transaction.commit();
-    }
-
-    // Cargar datos del usuario
-    private void loadUserData() {
-        FirebaseUser user = mAuth.getCurrentUser();
-        if (user != null) {
-            txtUserEmail.setText(user.getEmail());
-
-            mDatabase.child("usuarios").child(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
-                    if (dataSnapshot.exists()) {
-                        String nomape = dataSnapshot.child("nomape").getValue(String.class);
-                        // Aquí puedes cargar más datos del usuario si es necesario
-                    }
-                }
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError databaseError) {
-                    // Manejar errores
-                }
-            });
-        }
+    @Override
+    public boolean onSupportNavigateUp() {
+        NavController navController = Navigation.findNavController(this, R.id.nav_host_fragment);
+        return navController.navigateUp() || super.onSupportNavigateUp();
     }
 }

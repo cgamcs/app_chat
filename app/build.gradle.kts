@@ -31,10 +31,6 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-
-    lintOptions {
-        disable ("Deprecated")
-    }
 }
 
 dependencies {
@@ -42,19 +38,24 @@ dependencies {
     implementation(libs.material)
     implementation(libs.activity)
     implementation(libs.constraintlayout)
-    implementation(files("libs\\jtds-1.3.1.jar"))
-    implementation(files("libs\\mysql-connector-java-5.1.49.jar"))
+    implementation(files("libs/jtds-1.3.1.jar"))
+    implementation(files("libs/mysql-connector-java-5.1.49.jar"))
     implementation(libs.firebase.firestore)
+    implementation(libs.navigation.runtime)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
-    implementation("androidx.gridlayout:gridlayout:1.0.0")
+    implementation(libs.gridlayout)
 
     // Dependencias de Firebase
-    implementation(platform("com.google.firebase:firebase-bom:32.2.3")) // BoM para Firebase
-    implementation("com.google.firebase:firebase-auth") // Autenticación de Firebase
-    implementation("com.google.firebase:firebase-database") // Realtime Database
+    implementation(platform(libs.firebase.bom)) // BoM para Firebase
+    implementation(libs.firebase.auth) // Autenticación de Firebase
+    implementation(libs.firebase.database) // Realtime Database
 
     // Google ML Kit
-    implementation("com.google.mlkit:translate:17.0.2")
+    implementation(libs.translate)
+
+    // Navigation
+    implementation(libs.navigation.fragment)
+    implementation(libs.navigation.ui)
 }

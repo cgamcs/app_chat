@@ -10,7 +10,6 @@
         android:name="com.google.android.geo.API_KEY"
         android:value="AIzaSyCtpa1tzOxN2KKCN05fUIYLBQ69yyJd1oE"/>
 
-
     <application
         android:allowBackup="true"
         android:supportsRtl="true"
@@ -31,11 +30,11 @@
             android:name=".MainActivity"
             android:exported="false" />
         <activity
-            android:name=".SesionActivity"
+            android:name=".RegisterActivity"
             android:exported="false" />
         <activity
-            android:name=".RegisterActivity"
-            android:exported="true">
+            android:name=".SesionActivity"
+            android:exported="true" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -43,5 +42,4 @@
             </intent-filter>
         </activity>
     </application>
-
 </manifest>

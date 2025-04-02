@@ -1,0 +1,29 @@
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:startDestination="@id/nav_chats">
+
+    <fragment
+        android:id="@+id/nav_chats"
+        android:name="com.example.xdd.ChatsFragment"
+        android:label="ChatsFragment" >
+        <action
+            android:id="@+id/action_chatsFragment_to_chatFragment"
+            app:destination="@id/chatFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/chatFragment"
+        android:name="com.example.xdd.ChatFragment"
+        android:label="ChatFragment" />
+
+    <fragment
+        android:id="@+id/nav_calls"
+        android:name="com.example.xdd.CallsFragment"
+        android:label="CallsFragment" />
+
+    <fragment
+        android:id="@+id/nav_menu"
+        android:name="com.example.xdd.MenuFragment"
+        android:label="MenuFragment" />
+</navigation>

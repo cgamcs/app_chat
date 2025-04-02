@@ -30,7 +30,7 @@ public class ChatFragment extends Fragment {
     private Button btnSendMessage;
     private RecyclerView recyclerMessages;
     private MessageAdapter messageAdapter;
-    private List<String> messages;
+    private List<Message> messages;
     private String chatId;
     private String otherUserId;
 
@@ -39,7 +39,8 @@ public class ChatFragment extends Fragment {
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_chat, container, false);
 
         // Inicializar Firebase
@@ -75,19 +76,16 @@ public class ChatFragment extends Fragment {
         }
 
         // Configurar el listener para el botón
-        btnSendMessage.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String message = editMessage.getText().toString().trim();
-                if (!message.isEmpty()) {
-                    if (NetworkUtils.isNetworkAvailable(getActivity())) {
-                        sendMessage(message);
-                    } else {
-                        Toast.makeText(getActivity(), "No hay conexión a Internet", Toast.LENGTH_SHORT).show();
-                    }
+        btnSendMessage.setOnClickListener(v -> {
+            String messageText = editMessage.getText().toString().trim();
+            if (!messageText.isEmpty()) {
+                if (NetworkUtils.isNetworkAvailable(getActivity())) {
+                    sendMessage(messageText);
                 } else {
-                    Toast.makeText(getActivity(), "Por favor, escribe un mensaje", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(getActivity(), "No hay conexión a Internet", Toast.LENGTH_SHORT).show();
                 }
+            } else {
+                Toast.makeText(getActivity(), "Por favor, escribe un mensaje", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -100,11 +98,11 @@ public class ChatFragment extends Fragment {
                 .addOnFailureListener(e -> Log.e("Firebase", "Error al habilitar red: " + e.getMessage()));
     }
 
-    private void sendMessage(String message) {
+    private void sendMessage(String messageText) {
         String currentUserId = mAuth.getCurrentUser().getUid();
         Map<String, Object> messageMap = new HashMap<>();
         messageMap.put("senderId", currentUserId);
-        messageMap.put("text", message);
+        messageMap.put("text", messageText);
         messageMap.put("timestamp", System.currentTimeMillis());
 
         // Guardar el mensaje en Firestore
@@ -112,7 +110,7 @@ public class ChatFragment extends Fragment {
                 .addOnSuccessListener(documentReference -> {
                     editMessage.setText("");
                     // Actualizar el último mensaje en el documento del chat
-                    db.collection("chats").document(chatId).update("lastMessage", message);
+                    db.collection("chats").document(chatId).update("lastMessage", messageText);
                 })
                 .addOnFailureListener(e -> {
                     Log.e("ChatFragment", "Error al enviar el mensaje: " + e.getMessage());
@@ -129,11 +127,13 @@ public class ChatFragment extends Fragment {
                         Toast.makeText(getActivity(), "Error al cargar los mensajes", Toast.LENGTH_SHORT).show();
                         return;
                     }
-
                     messages.clear();
                     for (QueryDocumentSnapshot doc : value) {
-                        if (doc.get("text") != null) {
-                            messages.add(doc.getString("text"));
+                        String senderId = doc.getString("senderId");
+                        String text = doc.getString("text");
+                        Long timestamp = doc.getLong("timestamp");
+                        if (senderId != null && text != null && timestamp != null) {
+                            messages.add(new Message(senderId, text, timestamp));
                         }
                     }
                     messageAdapter.notifyDataSetChanged();

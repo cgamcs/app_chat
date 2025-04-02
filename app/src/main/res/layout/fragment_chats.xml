@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -19,19 +20,25 @@
             android:hint="Correo o teléfono del usuario"
             android:inputType="textEmailAddress" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_start_chat"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Iniciar Chat" />
+            app:cornerRadius="8dp"
+            android:text="Iniciar Chat"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/messenger_blue"/>
     </LinearLayout>
 
     <!-- Botón para restaurar la base de datos -->
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_restore_db"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        app:cornerRadius="8dp"
         android:text="Restaurar Mi Usuario"
+        android:textColor="@color/white"
+        android:backgroundTint="@color/messenger_blue"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"/>
 

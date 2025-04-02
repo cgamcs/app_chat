@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/black"
@@ -10,21 +11,42 @@
         android:id="@+id/recycler_messages"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1" />
+        android:textColor="@color/white"
+        android:layout_weight="1"/>
 
-    <EditText
-        android:id="@+id/edit_message"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Escribe un mensaje"
-        android:layout_marginTop="8dp" />
+        android:orientation="horizontal"
+        android:layout_marginTop="8dp"
+        android:gravity="center_vertical">
 
-    <Button
-        android:id="@+id/btn_send_message"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Enviar"
-        android:layout_gravity="end"
-        android:layout_marginTop="8dp" />
+        <EditText
+            android:id="@+id/edit_message"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:hint="Escribe un mensaje"
+            android:padding="12dp"
+            android:maxLines="4"
+            android:scrollbars="vertical"
+            android:textColor="@color/white"
+            android:background="@drawable/bg_message_input" />
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_send_message"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="8dp"
+            app:cornerRadius="24dp"
+            app:icon="@drawable/baseline_send_24"
+            app:iconGravity="textStart"
+            app:iconPadding="0dp"
+            android:insetLeft="0dp"
+            android:insetTop="0dp"
+            android:insetRight="0dp"
+            android:insetBottom="0dp"
+            android:textColor="@color/white"
+            android:backgroundTint="@color/messenger_blue" />
+    </LinearLayout>
 </LinearLayout>

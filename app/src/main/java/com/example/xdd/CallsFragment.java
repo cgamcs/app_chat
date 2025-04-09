@@ -14,6 +14,8 @@ import android.widget.Button;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.NavController;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -29,6 +31,12 @@ public class CallsFragment extends Fragment implements CallService.CallEventList
 
     private CallService callService;
     private boolean isBound = false;
+
+    // Inside your CallsFragment.java
+    private void navigateToSelectUser() {
+        NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment);
+        navController.navigate(R.id.action_callsFragment_to_selectUserFragment);
+    }
 
     private ServiceConnection connection = new ServiceConnection() {
         @Override

@@ -20,7 +20,16 @@
     <fragment
         android:id="@+id/nav_calls"
         android:name="com.example.xdd.CallsFragment"
-        android:label="CallsFragment" />
+        android:label="CallsFragment">
+        <action
+            android:id="@+id/action_callsFragment_to_selectUserFragment"
+            app:destination="@id/selectUserFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/selectUserFragment"
+        android:name="com.example.xdd.SelectUserFragment"
+        android:label="SelectUserFragment" />
 
     <fragment
         android:id="@+id/nav_menu"

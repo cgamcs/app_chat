@@ -1,20 +1,25 @@
 package com.example.xdd;
 
 public class User {
-    private String userId;
+    private String id;
     private String username;
-    private String fcmToken;
+    private String email;
 
-    public User() {}  // Necesario para Firestore
-
-    public User(String userId, String username, String fcmToken) {
-        this.userId = userId;
+    public User(String id, String username, String email) {
+        this.id = id;
         this.username = username;
-        this.fcmToken = fcmToken;
+        this.email = email;
     }
 
-    // Getters
-    public String getUserId() { return userId; }
-    public String getUsername() { return username; }
-    public String getFcmToken() { return fcmToken; }
+    public String getId() {
+        return id;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public String getEmail() {
+        return email;
+    }
 }

@@ -1,4 +1,3 @@
-// UserAdapter.java (Nuevo adaptador)
 package com.example.xdd;
 
 import android.view.LayoutInflater;
@@ -17,26 +16,29 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
     private OnUserClickListener listener;
 
     public interface OnUserClickListener {
-        void onUserClick(User user);
+        void onUserClick(int position);
     }
 
-    public UserAdapter(List<User> userList, OnUserClickListener listener) {
-        this.userList = userList;
+    public void setOnUserClickListener(OnUserClickListener listener) {
         this.listener = listener;
+    }
+
+    public UserAdapter(List<User> userList) {
+        this.userList = userList;
     }
 
     @NonNull
     @Override
     public UserViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext())
-                .inflate(R.layout.item_user, parent, false);
-        return new UserViewHolder(view);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_user, parent, false);
+        return new UserViewHolder(view, listener);
     }
 
     @Override
     public void onBindViewHolder(@NonNull UserViewHolder holder, int position) {
         User user = userList.get(position);
-        holder.bind(user, listener);
+        holder.txtUsername.setText(user.getUsername());
+        holder.txtEmail.setText(user.getEmail());
     }
 
     @Override
@@ -45,16 +47,22 @@ public class UserAdapter extends RecyclerView.Adapter<UserAdapter.UserViewHolder
     }
 
     static class UserViewHolder extends RecyclerView.ViewHolder {
-        TextView txtUserName;
+        TextView txtUsername, txtEmail;
 
-        UserViewHolder(@NonNull View itemView) {
+        public UserViewHolder(@NonNull View itemView, final OnUserClickListener listener) {
             super(itemView);
-            txtUserName = itemView.findViewById(R.id.txt_user_name);
-        }
+            txtUsername = itemView.findViewById(R.id.txt_username);
+            txtEmail = itemView.findViewById(R.id.txt_email);
 
-        void bind(User user, OnUserClickListener listener) {
-            txtUserName.setText(user.getUsername());
-            itemView.setOnClickListener(v -> listener.onUserClick(user));
+            // Añadir listener para click en elementos
+            itemView.setOnClickListener(v -> {
+                if (listener != null) {
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION) {
+                        listener.onUserClick(position);
+                    }
+                }
+            });
         }
     }
 }

@@ -13,6 +13,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.json.JSONObject;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -25,7 +27,7 @@ import io.agora.rtc2.RtcEngine;
 
 public class CallService extends Service {
     private static final String TAG = "CallService";
-    private static final String APP_ID = "11b730e2f5964ea48f47c005164adcd5";
+    private static final String APP_ID = "key=11b730e2f5964ea48f47c005164adcd5";
 
     private final IBinder binder = new CallBinder();
     private RtcEngine agoraEngine;
@@ -176,17 +178,28 @@ public class CallService extends Service {
                 conn.setDoOutput(true);
                 conn.setDoInput(true);
                 conn.setRequestProperty("Content-Type", "application/json");
-                conn.setRequestProperty("Authorization", "BGCiShV7BHPy0dqCh82eJZWGk4DBFMe9LHIug-5WVCWFfngtKB1KluRLkY6AwChSBfpgnYOPPqDNhb4Ps3wRlN0");
+                conn.setRequestProperty("Authorization", "key=TU_CLAVE_SERVIDOR_FCM"); // Debes obtener esta clave de la consola de Firebase
 
                 JSONObject root = new JSONObject();
                 root.put("to", token);
+
+                // Añadir alta prioridad para que la notificación aparezca incluso con la app en segundo plano
+                root.put("priority", "high");
 
                 JSONObject data = new JSONObject();
                 data.put("type", "CALL");
                 data.put("callerName", callerName);
                 data.put("channelName", channelName);
 
+                // Añadir notificación para que se muestre incluso cuando la app está en segundo plano
+                JSONObject notification = new JSONObject();
+                notification.put("title", "Llamada entrante");
+                notification.put("body", callerName + " te está llamando");
+                notification.put("sound", "default");
+                notification.put("click_action", "OPEN_CALL_ACTIVITY");
+
                 root.put("data", data);
+                root.put("notification", notification);
 
                 OutputStream os = conn.getOutputStream();
                 os.write(root.toString().getBytes("UTF-8"));
@@ -194,10 +207,33 @@ public class CallService extends Service {
 
                 int responseCode = conn.getResponseCode();
                 Log.d("FCM", "Respuesta FCM: " + responseCode);
+
+                // Leer la respuesta para depuración
+                if (responseCode != 200) {
+                    BufferedReader in = new BufferedReader(new InputStreamReader(conn.getErrorStream()));
+                    String inputLine;
+                    StringBuilder response = new StringBuilder();
+                    while ((inputLine = in.readLine()) != null) {
+                        response.append(inputLine);
+                    }
+                    in.close();
+                    Log.e("FCM", "Error en respuesta: " + response.toString());
+                }
             } catch (Exception e) {
                 Log.e("FCM", "Error enviando notificación", e);
             }
         }).start();
+    }
+
+    // Añadir este método a CallService para manejar explícitamente una llamada recibida (será llamado desde FCM):
+    public void handleIncomingCall(String callerName, String channelName) {
+        IncomingCall call = new IncomingCall(callerName, channelName);
+        pendingCalls.add(call);
+
+        // Notificar a todos los listeners
+        for (CallEventListener listener : listeners) {
+            listener.onCallReceived(callerName, channelName);
+        }
     }
 
 

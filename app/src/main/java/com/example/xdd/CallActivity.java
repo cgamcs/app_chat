@@ -19,9 +19,9 @@ import io.agora.rtc2.Constants;
 import io.agora.rtc2.video.VideoCanvas;
 
 public class CallActivity extends AppCompatActivity implements CallService.CallEventListener {
-    private static final String EXTRA_CHANNEL_NAME = "channel_name";
-    private static final String EXTRA_IS_OUTGOING = "is_outgoing";
-    private static final String EXTRA_REMOTE_USER_NAME = "remote_user_name";
+    public static final String EXTRA_CHANNEL_NAME = "channel_name";
+    public static final String EXTRA_IS_OUTGOING = "is_outgoing";
+    public static final String EXTRA_REMOTE_USER_NAME = "remote_user_name";
 
     private String channelName;
     private boolean isOutgoing;
@@ -48,6 +48,8 @@ public class CallActivity extends AppCompatActivity implements CallService.CallE
     private CallService callService;
     private boolean isBound = false;
 
+    private Runnable pendingAction = null;
+
     private ServiceConnection connection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName className, IBinder service) {
@@ -55,6 +57,13 @@ public class CallActivity extends AppCompatActivity implements CallService.CallE
             callService = binder.getService();
             callService.addListener(CallActivity.this);
             isBound = true;
+
+            // Si hay una acción pendiente (desde notificación), ejecutarla
+            if (pendingAction != null) {
+                pendingAction.run();
+                pendingAction = null;
+                return;
+            }
 
             // Si es una llamada saliente, iniciarla
             if (isOutgoing) {
@@ -100,6 +109,10 @@ public class CallActivity extends AppCompatActivity implements CallService.CallE
         isOutgoing = getIntent().getBooleanExtra(EXTRA_IS_OUTGOING, false);
         remoteUserName = getIntent().getStringExtra(EXTRA_REMOTE_USER_NAME);
 
+        // Verificar si viene desde notificación con acción específica
+        boolean acceptFromNotification = getIntent().getBooleanExtra("accept", false);
+        boolean rejectFromNotification = getIntent().getBooleanExtra("reject", false);
+
         // Inicializar vistas
         localVideoContainer = findViewById(R.id.local_video_container);
         remoteVideoContainer = findViewById(R.id.remote_video_container);
@@ -128,6 +141,23 @@ public class CallActivity extends AppCompatActivity implements CallService.CallE
         // Vincular al servicio
         Intent intent = new Intent(this, CallService.class);
         bindService(intent, connection, Context.BIND_AUTO_CREATE);
+
+        // Si viene de notificación con acción, procesarla
+        if (acceptFromNotification) {
+            // Mostrar UI aceptando llamada
+            incomingCallControls.setVisibility(View.GONE);
+            callControls.setVisibility(View.VISIBLE);
+            txtStatus.setText("Conectando...");
+
+            // El acceptCall real se ejecutará después de vincular el servicio
+            pendingAction = () -> acceptCall();
+        } else if (rejectFromNotification) {
+            // Rechazar llamada y cerrar actividad
+            pendingAction = () -> {
+                rejectCall();
+                finish();
+            };
+        }
     }
 
     private void setupVideoViews() {
@@ -258,5 +288,5 @@ public class CallActivity extends AppCompatActivity implements CallService.CallE
             unbindService(connection);
             isBound = false;
         }
-    }
+    };
 }

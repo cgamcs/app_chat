@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/black">
+
+    <!-- Contenedor para video remoto -->
+    <FrameLayout
+        android:id="@+id/remote_video_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+
+    <!-- Información de la llamada (en la parte superior) -->
+    <LinearLayout
+        android:id="@+id/call_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="#80000000"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <TextView
+            android:id="@+id/txt_user_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Nombre de usuario"
+            android:textColor="@android:color/white"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/txt_call_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Estado de la llamada"
+            android:textColor="@android:color/white"
+            android:textSize="16sp" />
+    </LinearLayout>
+
+    <!-- Contenedor para video local (en la esquina) -->
+    <FrameLayout
+        android:id="@+id/local_video_container"
+        android:layout_width="120dp"
+        android:layout_height="160dp"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentTop="true"
+        android:layout_margin="16dp"
+        android:background="#AAAAAA" />
+
+    <!-- Controles de llamada (en la parte inferior) -->
+    <LinearLayout
+        android:id="@+id/call_controls"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="#80000000"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="16dp">
+
+        <ImageButton
+            android:id="@+id/btn_mute"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_margin="8dp"
+            android:background="@drawable/rounded_button_background"
+            android:padding="12dp"
+            android:src="@drawable/ic_mic"
+            android:contentDescription="Mute"
+            app:tint="@android:color/white" />
+
+        <ImageButton
+            android:id="@+id/btn_video_toggle"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_margin="8dp"
+            android:background="@drawable/rounded_button_background"
+            android:padding="12dp"
+            android:src="@drawable/ic_videocam"
+            android:contentDescription="Video Toggle"
+            app:tint="@android:color/white" />
+
+        <ImageButton
+            android:id="@+id/btn_end_call"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_margin="8dp"
+            android:background="@drawable/rounded_button_red_background"
+            android:padding="12dp"
+            android:src="@drawable/ic_call_end"
+            android:contentDescription="End Call"
+            app:tint="@android:color/white" />
+
+        <ImageButton
+            android:id="@+id/btn_switch_camera"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:layout_margin="8dp"
+            android:background="@drawable/rounded_button_background"
+            android:padding="12dp"
+            android:src="@drawable/ic_switch_camera"
+            android:contentDescription="Switch Camera"
+            app:tint="@android:color/white" />
+    </LinearLayout>
+
+    <!-- Controles para llamada entrante -->
+    <LinearLayout
+        android:id="@+id/incoming_call_controls"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="#80000000"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:padding="16dp"
+        android:visibility="gone">
+
+        <ImageButton
+            android:id="@+id/btn_reject"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_margin="16dp"
+            android:background="@drawable/rounded_button_red_background"
+            android:padding="12dp"
+            android:src="@drawable/ic_call_end"
+            android:contentDescription="Rechazar"
+            app:tint="@android:color/white" />
+
+        <ImageButton
+            android:id="@+id/btn_accept"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
+            android:layout_margin="16dp"
+            android:background="@drawable/rounded_button_green_background"
+            android:padding="12dp"
+            android:src="@drawable/ic_call"
+            android:contentDescription="Aceptar"
+            app:tint="@android:color/white" />
+    </LinearLayout>
+
+</RelativeLayout>

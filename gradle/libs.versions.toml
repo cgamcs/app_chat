@@ -1,6 +1,8 @@
 [versions]
 agp = "8.6.0"
 firebaseBom = "33.12.0"
+fullSdk = "4.2.3"
+googleWebrtc = "1.0.32006"
 gridlayout = "1.0.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -13,11 +15,14 @@ google-services = "4.3.15"
 firebaseFirestore = "25.1.3"
 navigationRuntime = "2.8.9"
 translate = "17.0.3"
+firebaseMessaging = "24.1.1"
 
 [libraries]
 firebase-auth = { module = "com.google.firebase:firebase-auth" }
 firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebaseBom" }
 firebase-database = { module = "com.google.firebase:firebase-database" }
+full-sdk = { module = "io.agora.rtc:full-sdk", version.ref = "fullSdk" }
+google-webrtc = { module = "org.webrtc:google-webrtc", version.ref = "googleWebrtc" }
 gridlayout = { module = "androidx.gridlayout:gridlayout", version.ref = "gridlayout" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
@@ -31,6 +36,7 @@ navigation-fragment = { module = "androidx.navigation:navigation-fragment", vers
 navigation-runtime = { group = "androidx.navigation", name = "navigation-runtime", version.ref = "navigationRuntime" }
 navigation-ui = { module = "androidx.navigation:navigation-ui", version.ref = "navigationRuntime" }
 translate = { module = "com.google.mlkit:translate", version.ref = "translate" }
+firebase-messaging = { group = "com.google.firebase", name = "firebase-messaging", version.ref = "firebaseMessaging" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

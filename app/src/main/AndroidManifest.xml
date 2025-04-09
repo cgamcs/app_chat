@@ -3,8 +3,22 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.xdd">
 
+    <!-- Permisos para internet -->
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <!-- Permisos para cámara y micrófono -->
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+
+    <!-- Permisos opcionales pero recomendados -->
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+
+    <!-- Declarar que la app usa hardware de cámara -->
+    <uses-feature android:name="android.hardware.camera" />
+    <uses-feature android:name="android.hardware.camera.autofocus" />
 
     <meta-data
         android:name="com.google.android.geo.API_KEY"
@@ -20,6 +34,22 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:theme="@style/Theme.Xdd"
         tools:targetApi="31">
+        <service android:name=".MyFirebaseMessagingService"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
+        <service
+            android:name=".CallService"
+            android:enabled="true"
+            android:exported="false" />
+        <activity
+            android:name=".CallActivity"
+            android:theme="@style/Theme.AppCompat.NoActionBar"
+            android:configChanges="orientation|screenSize"
+            android:screenOrientation="portrait"
+            android:launchMode="singleTask" />
         <activity android:name=".EditProfileActivity"
             android:exported="false" />
         <activity android:name=".LanguageHelper"

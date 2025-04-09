@@ -13,6 +13,15 @@ import java.util.List;
 public class CallAdapter extends RecyclerView.Adapter<CallAdapter.CallViewHolder> {
 
     private List<Call> callList;
+    private OnItemClickListener listener;
+
+    public interface OnItemClickListener {
+        void onItemClick(int position);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
+    }
 
     public CallAdapter(List<Call> callList) {
         this.callList = callList;
@@ -22,7 +31,7 @@ public class CallAdapter extends RecyclerView.Adapter<CallAdapter.CallViewHolder
     @Override
     public CallViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_call, parent, false);
-        return new CallViewHolder(view);
+        return new CallViewHolder(view, listener);
     }
 
     @Override
@@ -45,10 +54,20 @@ public class CallAdapter extends RecyclerView.Adapter<CallAdapter.CallViewHolder
     static class CallViewHolder extends RecyclerView.ViewHolder {
         TextView txtCallName, txtCallStatus;
 
-        public CallViewHolder(@NonNull View itemView) {
+        public CallViewHolder(@NonNull View itemView, final OnItemClickListener listener) {
             super(itemView);
             txtCallName = itemView.findViewById(R.id.txt_call_name);
             txtCallStatus = itemView.findViewById(R.id.txt_call_status);
+
+            // Añadir listener para click en elementos
+            itemView.setOnClickListener(v -> {
+                if (listener != null) {
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION) {
+                        listener.onItemClick(position);
+                    }
+                }
+            });
         }
     }
 }

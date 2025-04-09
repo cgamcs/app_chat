@@ -17,6 +17,10 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    buildFeatures {
+        dataBinding = true
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -31,6 +35,14 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
+
+    // Agregar esta configuración para evitar errores de duplicación
+//    packagingOptions {
+//        pickFirst 'lib/armeabi-v7a/libc++_shared.so'
+//        pickFirst 'lib/arm64-v8a/libc++_shared.so'
+//        pickFirst 'lib/x86/libc++_shared.so'
+//        pickFirst 'lib/x86_64/libc++_shared.so'
+//    }
 }
 
 dependencies {
@@ -42,6 +54,7 @@ dependencies {
     implementation(files("libs/mysql-connector-java-5.1.49.jar"))
     implementation(libs.firebase.firestore)
     implementation(libs.navigation.runtime)
+    implementation(libs.firebase.messaging)
     testImplementation(libs.junit)
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
@@ -58,4 +71,7 @@ dependencies {
     // Navigation
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.ui)
+
+    // Agora
+    implementation("io.agora.rtc:full-sdk:4.2.3")
 }

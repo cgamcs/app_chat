@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.os.IBinder;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,6 +57,7 @@ public class CallsFragment extends Fragment implements CallService.CallEventList
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Log.d("CallsFragment", "onCreateView called");
         View view = inflater.inflate(R.layout.fragment_calls, container, false);
 
         recyclerView = view.findViewById(R.id.recycler_calls);
@@ -97,13 +99,31 @@ public class CallsFragment extends Fragment implements CallService.CallEventList
         });
     }
 
+    // Update the setupCallButton method in CallsFragment.java
     private void setupCallButton() {
         btnStartCall.setOnClickListener(v -> {
-            // Navegar al fragment de selección de usuarios
-            getParentFragmentManager().beginTransaction()
-                    .replace(R.id.nav_host_fragment, new SelectUserFragment())
-                    .addToBackStack(null)
-                    .commit();
+            Log.d("CallsFragment", "Start call button clicked");
+            // Use the navigation component for transition
+            NavController navController = Navigation.findNavController(requireActivity(), R.id.nav_host_fragment);
+            if (navController != null) {
+                try {
+                    navController.navigate(R.id.action_callsFragment_to_selectUserFragment);
+                } catch (Exception e) {
+                    Log.e("CallsFragment", "Navigation failed: " + e.getMessage());
+                    // Fallback method if navigation component fails
+                    getParentFragmentManager().beginTransaction()
+                            .replace(R.id.nav_host_fragment, new SelectUserFragment())
+                            .addToBackStack(null)
+                            .commit();
+                }
+            } else {
+                Log.e("CallsFragment", "NavController is null");
+                // Fallback method
+                getParentFragmentManager().beginTransaction()
+                        .replace(R.id.nav_host_fragment, new SelectUserFragment())
+                        .addToBackStack(null)
+                        .commit();
+            }
         });
     }
 

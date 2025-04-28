@@ -27,7 +27,7 @@ import io.agora.rtc2.RtcEngine;
 
 public class CallService extends Service {
     private static final String TAG = "CallService";
-    private static final String APP_ID = "key=11b730e2f5964ea48f47c005164adcd5";
+    private static final String APP_ID = "11b730e2f5964ea48f47c005164adcd5";
 
     private final IBinder binder = new CallBinder();
     private RtcEngine agoraEngine;

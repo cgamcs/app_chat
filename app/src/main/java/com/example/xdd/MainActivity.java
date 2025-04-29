@@ -17,8 +17,6 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.messaging.FirebaseMessaging;
-import com.zegocloud.uikit.prebuilt.call.invite.ZegoUIKitPrebuiltCallInvitationConfig;
-import com.zegocloud.uikit.prebuilt.call.invite.ZegoUIKitPrebuiltCallInvitationService;
 
 import android.util.Log;
 import android.widget.Toast;
@@ -60,8 +58,7 @@ public class MainActivity extends AppCompatActivity {
             // Inicializar ZegoCloud
             long appID = getResources().getInteger(R.integer.app_id);
             String appSign = getString(R.string.app_sign);
-            ZegoUIKitPrebuiltCallInvitationConfig callInvitationConfig = new ZegoUIKitPrebuiltCallInvitationConfig();
-            ZegoUIKitPrebuiltCallInvitationService.init(getApplication(), appID, appSign, currentUser.getUid(), currentUser.getDisplayName(), callInvitationConfig);
+            ZegoCallService.init(getApplication(), appID, appSign, currentUser.getUid(), currentUser.getDisplayName());
         } else {
             Log.d(TAG, "No hay usuario autenticado");
             // Aquí podrías redirigir al usuario a la pantalla de login si es necesario

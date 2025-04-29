@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -37,6 +38,7 @@ public class ChatFragment extends Fragment {
     private List<Message> messages;
     private String chatId;
     private String otherUserId;
+    private String otherUserName;
 
     private FirebaseAuth mAuth;
     private FirebaseFirestore db;
@@ -68,6 +70,7 @@ public class ChatFragment extends Fragment {
         if (bundle != null) {
             chatId = bundle.getString("chatId");
             otherUserId = bundle.getString("otherUserId");
+            otherUserName = bundle.getString("otherUserName", "Usuario");
         }
 
         // Forzar la habilitación de la red
@@ -152,30 +155,31 @@ public class ChatFragment extends Fragment {
     }
 
     private void startVideoCall() {
-        // Obtén el contexto actual
-        Context context = getContext();
-        if (context == null) {
-            Log.e("ChatFragment", "Context is null");
-            return;
-        }
-
-        // Obtén las credenciales de ZegoCloud
+        // Obtener ID y firma de la aplicación ZEGO
         long appID = getResources().getInteger(R.integer.app_id);
         String appSign = getString(R.string.app_sign);
 
-        // Genera un callID único
-        String callID = "call_" + System.currentTimeMillis();
+        // Crear un ID de llamada único basado en los usuarios
+        String callID = "call_" + chatId + "_" + System.currentTimeMillis();
 
-        // Obtén el nombre del usuario actual
-        String userName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
+        // Obtener información del usuario actual
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        String currentUserId = currentUser.getUid();
+        String currentUserName = currentUser.getDisplayName();
 
-        // Inicia la actividad de llamada
-        Intent intent = new Intent(context, CallActivity.class);
+        if (currentUserName == null || currentUserName.isEmpty()) {
+            currentUserName = "Usuario " + currentUserId.substring(0, 5);
+        }
+
+        // Crear intent para la actividad de llamada
+        Intent intent = new Intent(getContext(), CallActivity.class);
         intent.putExtra("appID", appID);
         intent.putExtra("appSign", appSign);
         intent.putExtra("callID", callID);
-        intent.putExtra("userID", otherUserId);
-        intent.putExtra("userName", userName);
+        intent.putExtra("isVideoCall", true); // Determina si es video/audio
+        intent.putExtra("userID", currentUserId);
+        intent.putExtra("userName", currentUserName);
+
         startActivity(intent);
     }
 }

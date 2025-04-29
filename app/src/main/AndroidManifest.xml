@@ -11,6 +11,7 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
     <!-- Permisos opcionales pero recomendados -->
     <uses-permission android:name="android.permission.BLUETOOTH" />
@@ -40,10 +41,6 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT"/>
             </intent-filter>
         </service>
-        <service
-            android:name=".CallService"
-            android:enabled="true"
-            android:exported="false" />
         <activity
             android:name=".CallActivity"
             android:theme="@style/Theme.AppCompat.NoActionBar"

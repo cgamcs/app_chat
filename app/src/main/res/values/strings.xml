@@ -1,4 +1,6 @@
 <resources>
+        <integer name="app_id">2386079</integer>
+        <string name="app_sign">b2f34b82d905f322ccf6ea5e8c8e7efc7724de85bf4a9f7ac24cc903bdde063f</string>
         <string name="app_name">xdd</string>
         <string name="login_title">Inicio de sesión</string>
         <string name="hint_user">Usuario</string>

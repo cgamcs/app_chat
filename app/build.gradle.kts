@@ -1,3 +1,4 @@
+// App-level build.gradle
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.google.services)
@@ -55,12 +56,12 @@ dependencies {
     androidTestImplementation(libs.espresso.core)
     implementation(libs.gridlayout)
 
-    implementation("com.github.ZEGOCLOUD:zego_uikit_prebuilt_call_android:3.9.2")
-    implementation("com.github.ZEGOCLOUD:zego_uikit_signaling_plugin_android:2.9.9")
-
-    // ZEGO UIKit dependencias base
-    implementation("com.github.ZEGOCLOUD:zego_uikit_android:3.5.8")
-    implementation("com.github.ZEGOCLOUD:zego_express_engine_android:3.9.2")
+    // ZEGO UIKit para videollamadas
+    implementation("com.github.ZEGOCLOUD:zego_uikit_prebuilt_call_android:3.0.4")
+    implementation("com.github.ZEGOCLOUD:zego_uikit_android:3.0.4")
+    // Dependencias adicionales para la biblioteca ZEGO
+    implementation("com.github.ZEGOCLOUD:zego_express_engine:3.2.1")
+    implementation("com.github.ZEGOCLOUD:zego_uikit_signaling_plugin_android:latest.release")
 
     // Dependencias de Firebase
     implementation(platform(libs.firebase.bom)) // BoM para Firebase
@@ -73,7 +74,4 @@ dependencies {
     // Navigation
     implementation(libs.navigation.fragment)
     implementation(libs.navigation.ui)
-
-    // Agora
-    implementation("io.agora.rtc:full-sdk:4.2.3")
 }

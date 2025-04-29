@@ -9,6 +9,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
 import androidx.navigation.ui.NavigationUI;
+
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
@@ -16,9 +17,13 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.FirebaseFirestoreSettings;
 import com.google.firebase.messaging.FirebaseMessaging;
+import com.zegocloud.uikit.prebuilt.call.invite.ZegoUIKitPrebuiltCallInvitationConfig;
+import com.zegocloud.uikit.prebuilt.call.invite.ZegoUIKitPrebuiltCallInvitationService;
 
 import android.util.Log;
 import android.widget.Toast;
+
+import java.util.HashMap;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -51,6 +56,12 @@ public class MainActivity extends AppCompatActivity {
             // Restaurar las colecciones de Firestore si es necesario
             FirestoreSetupHelper.checkAndRestoreCollections(this);
             Log.d(TAG, "Verificando y restaurando colecciones de Firestore");
+
+            // Inicializar ZegoCloud
+            long appID = getResources().getInteger(R.integer.app_id);
+            String appSign = getString(R.string.app_sign);
+            ZegoUIKitPrebuiltCallInvitationConfig callInvitationConfig = new ZegoUIKitPrebuiltCallInvitationConfig();
+            ZegoUIKitPrebuiltCallInvitationService.init(getApplication(), appID, appSign, currentUser.getUid(), currentUser.getDisplayName(), callInvitationConfig);
         } else {
             Log.d(TAG, "No hay usuario autenticado");
             // Aquí podrías redirigir al usuario a la pantalla de login si es necesario
@@ -84,10 +95,45 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void saveTokenToFirestore(String userId, String token) {
-        FirebaseFirestore.getInstance()
-                .collection("users")
+        // Guarda el token tanto en la colección users como en usuarios para asegurar compatibilidad
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+        // Actualiza en la colección "users"
+        db.collection("users")
                 .document(userId)
-                .update("fcmToken", token);
+                .update("fcmToken", token)
+                .addOnFailureListener(e -> {
+                    // Si falla porque el documento no existe, créalo
+                    db.collection("users")
+                            .document(userId)
+                            .set(new HashMap<String, Object>() {{
+                                put("fcmToken", token);
+                                put("userId", userId);
+                                // Añadir otros campos si son necesarios
+                            }});
+                });
+
+        // También actualiza en la colección "usuarios" si es la que realmente usas
+        String username = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
+        if (username != null && !username.isEmpty()) {
+            db.collection("usuarios")
+                    .whereEqualTo("userId", userId)
+                    .get()
+                    .addOnSuccessListener(querySnapshot -> {
+                        if (!querySnapshot.isEmpty()) {
+                            // Actualiza documento existente
+                            querySnapshot.getDocuments().get(0).getReference().update("fcmToken", token);
+                        } else {
+                            // Crea nuevo documento si no existe
+                            db.collection("usuarios")
+                                    .add(new HashMap<String, Object>() {{
+                                        put("fcmToken", token);
+                                        put("userId", userId);
+                                        put("username", username);
+                                    }});
+                        }
+                    });
+        }
     }
 
     private void requestPermissions() {

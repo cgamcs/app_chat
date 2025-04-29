@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
@@ -48,5 +47,14 @@
             android:insetBottom="0dp"
             android:textColor="@color/white"
             android:backgroundTint="@color/messenger_blue" />
+
+        <ImageView
+            android:id="@+id/btn_video_call"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginStart="8dp"
+            android:src="@drawable/baseline_video_call_24"
+            android:textColor="@color/white"
+            android:background="?attr/selectableItemBackgroundBorderless" />
     </LinearLayout>
 </LinearLayout>

@@ -5,16 +5,19 @@ plugins {
 
 android {
     namespace = "com.example.xdd"
-    compileSdk = 35
+    compileSdk = 34
 
     defaultConfig {
         applicationId = "com.example.xdd"
-        minSdk = 24
-        targetSdk = 35
+        minSdk = 26
+        targetSdk = 34
         versionCode = 1
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        resValue("integer", "app_id", "2386079")
+        resValue("string", "app_sign", "b2f34b82d905f322ccf6ea5e8c8e7efc7724de85bf4a9f7ac24cc903bdde063f")
     }
 
     buildFeatures {
@@ -35,14 +38,6 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-
-    // Agregar esta configuración para evitar errores de duplicación
-//    packagingOptions {
-//        pickFirst 'lib/armeabi-v7a/libc++_shared.so'
-//        pickFirst 'lib/arm64-v8a/libc++_shared.so'
-//        pickFirst 'lib/x86/libc++_shared.so'
-//        pickFirst 'lib/x86_64/libc++_shared.so'
-//    }
 }
 
 dependencies {
@@ -59,6 +54,13 @@ dependencies {
     androidTestImplementation(libs.ext.junit)
     androidTestImplementation(libs.espresso.core)
     implementation(libs.gridlayout)
+
+    implementation("com.github.ZEGOCLOUD:zego_uikit_prebuilt_call_android:3.9.2")
+    implementation("com.github.ZEGOCLOUD:zego_uikit_signaling_plugin_android:2.9.9")
+
+    // ZEGO UIKit dependencias base
+    implementation("com.github.ZEGOCLOUD:zego_uikit_android:3.5.8")
+    implementation("com.github.ZEGOCLOUD:zego_express_engine_android:3.9.2")
 
     // Dependencias de Firebase
     implementation(platform(libs.firebase.bom)) // BoM para Firebase

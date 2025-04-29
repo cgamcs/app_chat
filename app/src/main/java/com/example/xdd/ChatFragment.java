@@ -1,5 +1,7 @@
 package com.example.xdd;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -7,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -28,6 +31,7 @@ public class ChatFragment extends Fragment {
 
     private EditText editMessage;
     private Button btnSendMessage;
+    private ImageView btnVideoCall;
     private RecyclerView recyclerMessages;
     private MessageAdapter messageAdapter;
     private List<Message> messages;
@@ -50,6 +54,7 @@ public class ChatFragment extends Fragment {
         // Inicializar las vistas
         editMessage = view.findViewById(R.id.edit_message);
         btnSendMessage = view.findViewById(R.id.btn_send_message);
+        btnVideoCall = view.findViewById(R.id.btn_video_call);
         recyclerMessages = view.findViewById(R.id.recycler_messages);
 
         // Configurar el RecyclerView
@@ -87,6 +92,11 @@ public class ChatFragment extends Fragment {
             } else {
                 Toast.makeText(getActivity(), "Por favor, escribe un mensaje", Toast.LENGTH_SHORT).show();
             }
+        });
+
+        // Configurar el listener para el icono de videollamada
+        btnVideoCall.setOnClickListener(v -> {
+            startVideoCall();
         });
 
         return view;
@@ -139,5 +149,33 @@ public class ChatFragment extends Fragment {
                     messageAdapter.notifyDataSetChanged();
                     recyclerMessages.scrollToPosition(messages.size() - 1);
                 });
+    }
+
+    private void startVideoCall() {
+        // Obtén el contexto actual
+        Context context = getContext();
+        if (context == null) {
+            Log.e("ChatFragment", "Context is null");
+            return;
+        }
+
+        // Obtén las credenciales de ZegoCloud
+        long appID = getResources().getInteger(R.integer.app_id);
+        String appSign = getString(R.string.app_sign);
+
+        // Genera un callID único
+        String callID = "call_" + System.currentTimeMillis();
+
+        // Obtén el nombre del usuario actual
+        String userName = FirebaseAuth.getInstance().getCurrentUser().getDisplayName();
+
+        // Inicia la actividad de llamada
+        Intent intent = new Intent(context, CallActivity.class);
+        intent.putExtra("appID", appID);
+        intent.putExtra("appSign", appSign);
+        intent.putExtra("callID", callID);
+        intent.putExtra("userID", otherUserId);
+        intent.putExtra("userName", userName);
+        startActivity(intent);
     }
 }
